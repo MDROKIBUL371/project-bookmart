@@ -1,0 +1,4 @@
+{
+   "MONGODB_URI": "DEFAULT_MONGO_URI",
+   "JWT_SECRET": "BookMart_secret_2020"
+}
