@@ -52,6 +52,7 @@ router.post('/login', async (req, res) => {
             username: user.username,
             email: user.email,
             purchasedBooks: user.purchasedBooks,
+            registeredDate: user.registeredDate,
          },
       });
    } catch (error) {
@@ -98,6 +99,7 @@ router.post('/register', async (req, res) => {
          email,
          password: hash,
          purchasedBooks: [],
+         registeredDate: new Date(),
       });
 
       const savedUser = await newUser.save();
@@ -133,12 +135,49 @@ router.post('/register', async (req, res) => {
 router.get('/user', auth, async (req, res) => {
    try {
       const user = await User.findById(req.user.id)
-         .populate('books')
+         .populate('purchasedBooks')
          .select('-password');
       if (!user) {
          throw Error('User Does not exist');
       }
       res.status(200).json(user);
+   } catch (error) {
+      res.status(400).json({ msg: error.message });
+   }
+});
+
+/**
+ * @route   POST api/auth/purchase/:id
+ * @desc    Purchase a book
+ * @access  Private
+ */
+router.post('/purchase/:id', auth, async (req, res) => {
+   const bookId = req.params.id;
+   try {
+      const user = await User.findById(req.user.id).select('-password');
+      if (!user) {
+         throw Error('User Does not exist');
+      }
+      let prevPurchasedBooks = user.purchasedBooks;
+      let alreadyPurchased = false;
+      for (let i = 0; i < prevPurchasedBooks.length; i += 1) {
+         if (prevPurchasedBooks[i].equals(bookId)) {
+            alreadyPurchased = true;
+         }
+      }
+      if (alreadyPurchased === false) {
+         // Purchase now
+         prevPurchasedBooks.push(bookId);
+         user.purchasedBooks = prevPurchasedBooks;
+         user.save();
+         return res.status(200).json(user);
+      } else {
+         // Already purchased
+         res.status(422).json({
+            purchaseFailed: true,
+            user,
+         });
+      }
    } catch (error) {
       res.status(400).json({ msg: error.message });
    }

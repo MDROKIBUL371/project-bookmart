@@ -4,6 +4,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { fetchBookById } from 'store/actions/booksActions';
+import { purchaseBook } from 'store/actions/authActions';
 
 const Loader = () => <div>Loading...</div>;
 
@@ -19,6 +20,20 @@ class Book extends Component {
       // eslint-disable-next-line react/destructuring-assignment
       this.props.fetchBookById(id);
    }
+
+   handlePurchase = (e) => {
+      e.preventDefault();
+      const { isAuthenticated, book } = this.props;
+      if (isAuthenticated) {
+         const { _id: id } = book;
+         if (id) {
+            // eslint-disable-next-line react/destructuring-assignment
+            this.props.purchaseBook(id);
+         }
+      } else {
+         window.location.href = '/signin';
+      }
+   };
 
    render() {
       const { book, isLoading } = this.props;
@@ -69,7 +84,11 @@ class Book extends Component {
                            <span className="text-primary mr-5">
                               <p>Price: {book.price}$</p>
                            </span>
-                           <button type="button" className="btn-sm btn-primary">
+                           <button
+                              type="button"
+                              className="btn-sm btn-primary"
+                              onClick={this.handlePurchase}
+                           >
                               Purchase
                            </button>
                         </div>
@@ -99,6 +118,7 @@ Book.propTypes = {
       }),
    }),
    book: PropTypes.shape({
+      _id: PropTypes.string,
       title: PropTypes.string,
       subtitle: PropTypes.string,
       description: PropTypes.string,
@@ -114,16 +134,20 @@ Book.propTypes = {
       modified: PropTypes.string,
    }),
    isLoading: PropTypes.bool.isRequired,
+   isAuthenticated: PropTypes.bool.isRequired,
    fetchBookById: PropTypes.func.isRequired,
+   purchaseBook: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
    book: state.books.book,
    isLoading: state.books.isLoading,
+   isAuthenticated: state.auth.isAuthenticated,
 });
 
 const mapDispatchToProps = {
    fetchBookById,
+   purchaseBook,
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Book));

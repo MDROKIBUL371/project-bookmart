@@ -93,3 +93,33 @@ export const getLoggedInUser = () => (dispatch, getState) => {
          });
       });
 };
+
+// Purchase a book
+export const purchaseBook = (id) => (dispatch, getState) => {
+   dispatch({
+      type: actionTypes.BOOK_PURCHASE_START,
+   });
+   axios
+      .post(`/api/auth/purchase/${id}`, null, headerConfig(getState))
+      .then((res) => {
+         dispatch({
+            type: actionTypes.BOOK_PURCHASE_SUCCESS,
+            payload: res.data,
+         });
+      })
+      .catch((error) => {
+         let errors = null;
+         if (error.response) {
+            errors = {
+               msg: error.response,
+            };
+         }
+         dispatch({
+            type: actionTypes.BOOK_PURCHASE_FAIL,
+         });
+         dispatch({
+            type: actionTypes.SHOW_ERROR,
+            payload: errors,
+         });
+      });
+};

@@ -1,9 +1,10 @@
 import React from 'react';
-import { withRouter, NavLink } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 // Redux
 import { connect } from 'react-redux';
 import moment from 'moment';
+import PurchaseHistory from '../History/PurchaseHistory';
 
 const Account = (props) => {
    const { user, isLoading } = props;
@@ -14,7 +15,7 @@ const Account = (props) => {
                <div className="card">
                   <div className="card-header">My Account</div>
                   {!isLoading &&
-                  Object.prototype.hasOwnProperty.call(user, '_id') ? (
+                  Object.prototype.hasOwnProperty.call(user, 'name') ? (
                      <div className="card-body text-left">
                         <h5 className="card-title">
                            Book Store User ({user.username})
@@ -55,25 +56,9 @@ const Account = (props) => {
             <div className="col">
                <div className="card">
                   <div className="card-header">My Purchases</div>
-                  {!isLoading &&
-                  Object.prototype.hasOwnProperty.call(
-                     user,
-                     'purchasedBooks'
-                  ) ? (
-                     <div className="card-body text-left">
-                        <ul className="list-group text-left">
-                           {user.purchasedBooks.map((book) => (
-                              <li className="list-group-item">
-                                 <NavLink to={`/bk/item/${book}`}>
-                                    {book}
-                                 </NavLink>
-                              </li>
-                           ))}
-                        </ul>
-                     </div>
-                  ) : (
-                     <div className="card-body">User not authorized</div>
-                  )}
+                  <div className="card-body">
+                     <PurchaseHistory />
+                  </div>
                </div>
             </div>
          </div>

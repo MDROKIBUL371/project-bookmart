@@ -4,12 +4,14 @@ const initialState = {
    accessToken: localStorage.getItem('accessToken'),
    user: {},
    isAuthenticated: false,
+   purchaseSuccess: null,
    isLoading: false,
 };
 
 export default function (state = initialState, action) {
    switch (action.type) {
       case actionTypes.AUTH_START:
+      case actionTypes.BOOK_PURCHASE_START:
          return {
             ...state,
             isLoading: true,
@@ -28,6 +30,19 @@ export default function (state = initialState, action) {
             user: action.payload,
             isLoading: false,
             isAuthenticated: true,
+         };
+      case actionTypes.BOOK_PURCHASE_SUCCESS:
+         return {
+            ...state,
+            user: action.payload,
+            purchaseSuccess: true,
+            isLoading: false,
+         };
+      case actionTypes.BOOK_PURCHASE_FAIL:
+         return {
+            ...state,
+            purchaseSuccess: false,
+            isLoading: false,
          };
       case actionTypes.AUTH_SUCCESS:
          localStorage.setItem('accessToken', action.payload.token);

@@ -37,9 +37,6 @@ const BookDisplayCard = (props) => {
             </div>
             <div className="m-1 justify-content-between">
                <span className="text-primary mr-4">Price: {price}$</span>
-               <button type="button" className="btn-sm btn-primary">
-                  Purchase
-               </button>
             </div>
          </div>
       </div>

@@ -3,41 +3,65 @@ import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 
 const PurchaseHistory = (props) => {
-   console.log(props);
-   const { isLoading } = props;
+   const { isLoading, user } = props;
+   const { purchasedBooks } = user;
    if (isLoading) {
       return <div className="text-info">Loading...</div>;
    }
    return (
-      <table className="table table-bordered table-hover">
-         <thead className="text-info">
-            <tr>
-               <th scope="col">#</th>
-               <th scope="col">Action</th>
-               <th scope="col">Date & Time</th>
-               <th scope="col">IP Address</th>
-               <th scope="col">Browser Environment</th>
-            </tr>
-         </thead>
-         <tbody>
-            <tr key={new Date().toISOString()}>
-               <th scope="row">{1 + 1}</th>
-               <td>AAAA</td>
-               <td>BBBB</td>
-               <td>CCCC</td>
-            </tr>
-            );
-         </tbody>
-      </table>
+      <div>
+         {purchasedBooks !== undefined &&
+         !isLoading &&
+         purchasedBooks.length !== 0 ? (
+            <table className="table table-bordered table-hover">
+               <thead className="text-info">
+                  <tr>
+                     <th scope="col">#</th>
+                     <th scope="col">Title</th>
+                     <th scope="col">Price</th>
+                     <th scope="col">Rating</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {purchasedBooks.map((book, index) => (
+                     // eslint-disable-next-line no-underscore-dangle
+                     <tr key={book._id}>
+                        <th scope="row">
+                           <div>{index}</div>
+                        </th>
+                        <td>
+                           <div>{book.title}</div>
+                        </td>
+                        <td>
+                           <div>{book.price}</div>
+                        </td>
+                        <td>
+                           <div>{book.rating}</div>
+                        </td>
+                     </tr>
+                  ))}
+               </tbody>
+            </table>
+         ) : (
+            <div>No data</div>
+         )}
+      </div>
    );
+};
+
+PurchaseHistory.defaultProps = {
+   user: {},
 };
 
 PurchaseHistory.propTypes = {
    isLoading: propTypes.bool.isRequired,
+   // eslint-disable-next-line react/forbid-prop-types
+   user: propTypes.object,
 };
 
 const mapStateToProps = (state) => {
    return {
+      user: state.auth.user,
       isLoading: state.auth.isLoading,
    };
 };
