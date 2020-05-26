@@ -46,7 +46,7 @@ class Book extends Component {
       if (book === {}) {
          return null;
       }
-      if(redirectToSignIn){
+      if(redirectToSignIn === true){
         return (
             <Redirect to="/signin">
         );
@@ -119,7 +119,7 @@ class Book extends Component {
 
 Book.defaultProps = {
    book: {},
-   match: {},
+   match: {}
 };
 
 Book.propTypes = {
