@@ -48,7 +48,7 @@ class Book extends Component {
       }
       if(redirectToSignIn === true){
         return (
-            <Redirect to="/signin">
+            <Redirect to="/signin" />
         );
       }
       return (
