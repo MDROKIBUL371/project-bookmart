@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import { fetchBookById } from 'store/actions/booksActions';
 import { purchaseBook } from 'store/actions/authActions';
 
@@ -11,7 +11,9 @@ const Loader = () => <div>Loading...</div>;
 class Book extends Component {
    constructor(props) {
       super(props);
-      this.state = {};
+      this.state = {
+         redirectToSignIn: false
+      };
    }
 
    componentDidMount() {
@@ -31,14 +33,23 @@ class Book extends Component {
             this.props.purchaseBook(id);
          }
       } else {
-         window.location.href = '/signin';
+         this.setState({
+            redirectToSignIn: true
+         });
+         //window.location.href = '/signin';
       }
    };
 
    render() {
       const { book, isLoading } = this.props;
+      const { redirectToSignIn } = this.state;
       if (book === {}) {
          return null;
+      }
+      if(redirectToSignIn){
+        return (
+            <Redirect to="/signin">
+        );
       }
       return (
          <div className="container my-5">
