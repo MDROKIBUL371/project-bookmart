@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const config = require('./config');
 
+// Default Mongodb URI variable
 const { MONGODB_URI } = config;
 
 const app = express();
